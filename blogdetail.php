@@ -33,7 +33,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 3 | Widgets</title>
+  <title>Blog Detail View</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Font Awesome -->
@@ -66,7 +66,7 @@
                 <div class="card-body">
                   <div style="text-align: center;">
                     <img class="img-fluid pad" src="dist/img/<?php echo $result[0]['image']?>"
-                      style="width:250px;height:200px;" alt="Photo">
+                      style="width:450px;height:300px;" alt="Photo">
                   </div>
                   <br>
                   <p style="text-align: center;"><?php echo $result[0]['content']?></p>
