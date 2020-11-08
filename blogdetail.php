@@ -1,5 +1,35 @@
+<?php 
+  require 'config/config.php';
+    session_start();
+    if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])){
+        header('Location:login.php');
+    }
+
+    $blogId = $_GET['id'];
+    $stmt = $connection->prepare("SELECT * FROM posts WHERE id=".$blogId);
+    $stmt->execute();
+    $result = $stmt->fetchAll();
+   
+
+    if($_POST){
+      $stmt = $connection->prepare("INSERT INTO comments(content,author_id,post_id) VALUES (:content,:authorId,:postId)");
+      $result= $stmt->execute(
+        array(
+          ':content'=>$_POST['comment'],
+          ':authorId'=> $_SESSION['user_id'],
+          ':postId'=>$blogId
+        )
+      ); 
+
+        if($result){
+          header('Location: blogdetail.php?id='.$blogId);
+        }
+
+    }
+?>
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -19,7 +49,7 @@
 <body class="hold-transition sidebar-mini">
   <!-- Content Wrapper. Contains page content -->
   <div class="wrapper">
-    <div class="">
+    <div class="content-wrapper" style="margin-left:0px">
 
       <!-- Content Wrapper. Contains page content -->
       <section class="content">
@@ -29,58 +59,54 @@
               <!-- Box Comment -->
               <div class="card card-widget">
                 <div class="card-header">
-                  <div class="card-header" style="text-align: center; float:none;">Blog Title</div>
+                  <div class="card-header" style="text-align: center; float:none;"><?php echo $result[0]['title'] ?>
+                  </div>
                 </div>
                 <!-- /.card-header -->
-                <div class="card-body" >
+                <div class="card-body">
                   <div style="text-align: center;">
-                    <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo" >
+                    <img class="img-fluid pad" src="dist/img/<?php echo $result[0]['image']?>"
+                      style="width:250px;height:200px;" alt="Photo">
                   </div>
-                  <p>I took this photo this morning. What do you guys think?</p>
-                  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i> Share</button>
-                  <button type="button" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"></i> Like</button>
-                  <span class="float-right text-muted">127 likes - 3 comments</span>
+                  <br>
+                  <p style="text-align: center;"><?php echo $result[0]['content']?></p>
+                  <h4>Comments</h4>
                 </div>
                 <!-- /.card-body -->
+
+                <hr>
                 <div class="card-footer card-comments">
+                  <?php 
+                    $stmtPosts = $connection->prepare("SELECT * FROM comments WHERE post_id=".$blogId);
+                    $stmtPosts->execute();
+                    $resultPosts = $stmtPosts->fetchAll();
+                    foreach($resultPosts as $value){
+                      $stmtUserName = $connection->prepare("SELECT * FROM users WHERE id=".$value['author_id']);
+                      $stmtUserName->execute();
+                      $result = $stmtUserName->fetch(PDO::FETCH_ASSOC);
+                  ?>
                   <div class="card-comment">
-                    <!-- User image -->
-                    <img class="img-circle img-sm" src="dist/img/user3-128x128.jpg" alt="User Image">
+                    <div class="comment-text" style="margin-left: 0px;">
 
-                    <div class="comment-text">
                       <span class="username">
-                        Maria Gonzales
-                        <span class="text-muted float-right">8:03 PM Today</span>
+                        <?php echo $result['name'] ?>
+                        <span class="text-muted float-right"><?php echo $value['created_at'] ?></span>
                       </span><!-- /.username -->
-                      It is a long established fact that a reader will be distracted
-                      by the readable content of a page when looking at its layout.
+                      <?php echo $value['content'] ?>
                     </div>
                     <!-- /.comment-text -->
                   </div>
-                  <!-- /.card-comment -->
-                  <div class="card-comment">
-                    <!-- User image -->
-                    <img class="img-circle img-sm" src="dist/img/user4-128x128.jpg" alt="User Image">
-
-                    <div class="comment-text">
-                      <span class="username">
-                        Luna Stark
-                        <span class="text-muted float-right">8:03 PM Today</span>
-                      </span><!-- /.username -->
-                      It is a long established fact that a reader will be distracted
-                      by the readable content of a page when looking at its layout.
-                    </div>
-                    <!-- /.comment-text -->
-                  </div>
-                  <!-- /.card-comment -->
+                  <?php 
+                    }?>
                 </div>
+
                 <!-- /.card-footer -->
                 <div class="card-footer">
-                  <form action="#" method="post">
-                    <img class="img-fluid img-circle img-sm" src="dist/img/user4-128x128.jpg" alt="Alt Text">
+                  <form action="" method="post">
                     <!-- .img-push is used to add margin to elements next to floating images -->
                     <div class="img-push">
-                      <input type="text" class="form-control form-control-sm" placeholder="Press enter to post comment">
+                      <input type="text" class="form-control form-control-sm" placeholder="Press enter to post comment"
+                        name="comment">
                     </div>
                   </form>
                 </div>
@@ -89,7 +115,7 @@
               <!-- /.card -->
             </div>
             <!-- /.col -->
-            
+
           </div>
       </section>
       <a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
@@ -98,14 +124,14 @@
     </div>
     <!-- /.content-wrapper -->
 
-    <footer class="main-footer" style="margin-left: 0px;">
-            <div class="float-right d-none d-sm-block">
-                <b>Version</b> 3.0.5
-            </div>
-            <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong> All rights
-            reserved.
-        </footer>
-
+    <footer class="main-footer" style="margin-left:0px;">
+      <!-- To the right -->
+      <div class="float-right d-none d-sm-inline">
+        <a href="logout.php" type="button" class="btn btn-danger">Logout</a>
+      </div>
+      <!-- Default to the left -->
+      <strong>Copyright &copy; 2020 <a href="#">Blog app</a>.</strong> All rights reserved.
+    </footer>
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
       <!-- Control sidebar content goes here -->

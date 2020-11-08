@@ -7,7 +7,7 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])){
 
 
 if($_POST){
-    $target_dir = "../images/";//creating a target dir
+    $target_dir = "../dist/img/";//creating a target dir
     $target_file = $target_dir.basename($_FILES["image"]["name"]);
     $image_type = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 

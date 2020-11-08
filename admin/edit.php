@@ -13,7 +13,7 @@ if($_POST){
     print $id . $title.$content;
 
     if($_FILES['image']['name']){
-        $target_dir = "../images/";//creating target dir
+        $target_dir = "../dist/img/";//creating target dir
         $target_file = $target_dir.basename($_FILES['image']['name']);
         $image_type = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
         
@@ -65,7 +65,7 @@ if($_POST){
                             </div>
                             <div class="form-group">
                                 <label for="">Image</label><br>
-                                <img src="../images/<?php echo $result[0]['image']?>" style="display:block;" width=100 height=150 alt=""><br>
+                                <img src="../dist/img/<?php echo $result[0]['image']?>" style="display:block;" width=100 height=150 alt=""><br>
                                 <input type="file" name="image" value="" >
                             </div>
                             <div class="form-group">

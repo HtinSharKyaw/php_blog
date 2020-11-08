@@ -1,3 +1,11 @@
+<?php 
+require 'config/config.php';
+    session_start();
+    if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])){
+        header('Location:login.php');
+    }
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -19,88 +27,42 @@
 
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-        <div class="">
+        <div class="content-wrapper" style="margin-left: 0px;">
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="col-sm-12">
-                        <h1 style="text-align: center;">Widgets</h1>
+                        <!-- <h1 style="text-align: center;">Widgets</h1> -->
                     </div>
                 </div>
             </section>
             <!-- Content Wrapper. Contains page content -->
             <section class="content">
+                <?php 
+                    $selectStmt = $connection->prepare("SELECT * FROM posts");
+                    $selectStmt->execute();
+                    $selectResult = $selectStmt->fetchAll();
+                    $totalPosts = count($selectResult);
+                ?>
                 <div class="row">
                     <div class="card-group">
-                        <div class="card">
-                            <div class="card-header" style="text-align: center; float:none;">title</div>
-                            <div class="card-body">
-                                <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">This is a longer card with supporting text below as a natural
-                                    lead-in to additional content. This content is a little bit longer.</p>
-                                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        <?php 
+                         foreach($selectResult as $value){
+                        ?>
+                            <div class="card">
+                                <div class="card-header" style="text-align: center; float:none;"><?php echo $value['title']?></div>
+                                <div class="card-body">
+                                    <a href="blogdetail.php?id=<?php echo $value['id']?>">
+                                    <img class="img-fluid pad card-img-top" src="dist/img/<?php echo $value['image'] ?>" alt="photo">
+                                    </a><div><br></div>
+                                    <h5 class="card-title"><?php echo $value['title']?></h5>
+                                    <br>
+                                    <p class="card-text"><?php echo $value['content']?></p>
+                                   
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header" style="text-align: center; float:none;">title</div>
-                            <div class="card-body">
-                                <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">This card has supporting text below as a natural lead-in to
-                                    additional content.</p>
-                                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header " style="text-align: center; float:none;">title</div>
-                            <div class="card-body">
-                                <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">This is a wider card with supporting text below as a natural
-                                    lead-in to additional content. This card has even longer content than the first to
-                                    show that equal height action.</p>
-                                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="row">
-                    <div class="card-group">
-                        <div class="card">
-                            <div class="card-header" style="text-align: center; float:none;">title</div>
-                            <div class="card-body">
-                                <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">This is a longer card with supporting text below as a natural
-                                    lead-in to additional content. This content is a little bit longer.</p>
-                                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header" style="text-align: center; float:none;">title</div>
-                            <div class="card-body">
-                                <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">This card has supporting text below as a natural lead-in to
-                                    additional content.</p>
-                                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header " style="text-align: center; float:none;">title</div>
-                            <div class="card-body">
-                                <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">This is a wider card with supporting text below as a natural
-                                    lead-in to additional content. This card has even longer content than the first to
-                                    show that equal height action.</p>
-                                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                            </div>
-                        </div>
+                        <?php  
+                         }
+                        ?>
                     </div>
                 </div>
             </section>

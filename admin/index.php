@@ -28,20 +28,17 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])){
                 }else{
                   $pageNo = 1;
                 }
+                $numberOfRecords = 5;
+                $offset = ($pageNo - 1)*$numberOfRecords;
                 
                 if($_POST){//this line solve the problem of unknown searchName error in first landing page after login
-                  $numberOfRecords = 1;
-                  $offset = ($pageNo - 1)*$numberOfRecords;
                   $searchKey = $_POST['searchName'];
                   $stmt = $connection->prepare("SELECT * FROM posts WHERE title LIKE '%$searchKey%' ORDER BY id DESC");
                   $stmt->execute();
                   $result = $stmt->fetchAll();
                   $totalPages = ceil(count($result)/$numberOfRecords);
                 }else{
-                  $numberOfRecords = 1;
-                  $offset = ($pageNo - 1)*$numberOfRecords;
                   $totalPages = ceil(count($rawResult)/$numberOfRecords);
-  
                   $stmt = $connection->prepare("SELECT * FROM posts ORDER BY id DESC LIMIT $offset,$numberOfRecords ");
                   $stmt->execute();
                   $result = $stmt->fetchAll();
