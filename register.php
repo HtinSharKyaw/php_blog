@@ -17,12 +17,13 @@ if($_POST){
         // print_r($hasAccount);
         echo "<script>alert('This email is already used,Please try another one')</script>";
     }else{
-        $insertStmt= $connection->prepare("INSERT INTO users(name,password,email) VALUES (:name,:password,:email)");
+        $insertStmt= $connection->prepare("INSERT INTO users(name,password,email,role) VALUES (:name,:password,:email,:role)");
         $insertResult =  $insertStmt->execute(
             array(
                 ':name'=> $name,
                 ':email'=> $email,
-                ':password'=>$password
+                ':password'=>$password,
+                ':role'=>0
             )
         );
         if($insertResult){

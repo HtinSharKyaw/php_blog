@@ -70,23 +70,32 @@
                   </div>
                   <br>
                   <p style="text-align: center;"><?php echo $result[0]['content']?></p>
+                  <div class="float-right d-none d-sm-inline">
+                  <a href="index.php" type="button" class="btn btn-primary">Go Back</a>
+                  </div>
                   <h4>Comments</h4>
+               
                 </div>
+               
                 <!-- /.card-body -->
 
                 <hr>
                 <div class="card-footer card-comments">
+              
                   <!-- This is php code for looping comments in the comment section -->
                   <?php 
                   //Getting all the post concerned with the blogId
                     $stmtPosts = $connection->prepare("SELECT * FROM comments WHERE post_id=".$blogId);
                     $stmtPosts->execute();
                     $resultPosts = $stmtPosts->fetchAll();
-                    foreach($resultPosts as $value){
-                      //This code is for extracting the related name based on the author_id
-                      $stmtUserName = $connection->prepare("SELECT * FROM users WHERE id=".$value['author_id']);
-                      $stmtUserName->execute();
-                      $result = $stmtUserName->fetch(PDO::FETCH_ASSOC);
+                    if($resultPosts){
+                      foreach($resultPosts as $value){
+                        //This code is for extracting the related name based on the author_id
+                        $stmtUserName = $connection->prepare("SELECT * FROM users WHERE id=".$value['author_id']);
+                        $stmtUserName->execute();
+                        $result = $stmtUserName->fetch(PDO::FETCH_ASSOC);
+                 
+               
                   ?>
                   <div class="card-comment">
                     <div class="comment-text" style="margin-left: 0px;">
@@ -100,6 +109,7 @@
                     <!-- /.comment-text -->
                   </div>
                   <?php 
+                     }
                     }?>
                 </div>
 

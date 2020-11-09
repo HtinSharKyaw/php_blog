@@ -17,6 +17,7 @@ if($_POST){
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_name'] = $user['name'];
         $_SESSION['logged_in'] = time();  
+        $_SESSION['role'] =1;
         header('Location:index.php');
       }else{
         echo "<script>alert('Incorrect Password')</script>";

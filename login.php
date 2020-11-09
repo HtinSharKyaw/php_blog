@@ -17,6 +17,7 @@ if($_POST){
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_name'] = $user['name'];
         $_SESSION['logged_in'] = time();
+        $_SESSION['role'] = 0;
         // echo "<script>alert('Successfully Logged in');</script>";  
         header('Location:index.php');
       }else{
