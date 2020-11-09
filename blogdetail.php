@@ -76,11 +76,14 @@
 
                 <hr>
                 <div class="card-footer card-comments">
+                  <!-- This is php code for looping comments in the comment section -->
                   <?php 
+                  //Getting all the post concerned with the blogId
                     $stmtPosts = $connection->prepare("SELECT * FROM comments WHERE post_id=".$blogId);
                     $stmtPosts->execute();
                     $resultPosts = $stmtPosts->fetchAll();
                     foreach($resultPosts as $value){
+                      //This code is for extracting the related name based on the author_id
                       $stmtUserName = $connection->prepare("SELECT * FROM users WHERE id=".$value['author_id']);
                       $stmtUserName->execute();
                       $result = $stmtUserName->fetch(PDO::FETCH_ASSOC);
