@@ -12,18 +12,23 @@
    
 
     if($_POST){
-      $stmt = $connection->prepare("INSERT INTO comments(content,author_id,post_id) VALUES (:content,:authorId,:postId)");
-      $result= $stmt->execute(
-        array(
-          ':content'=>$_POST['comment'],
-          ':authorId'=> $_SESSION['user_id'],
-          ':postId'=>$blogId
-        )
-      ); 
+      if(empty($_POST['comment'])){
+        $cmtError = "Comments should not be null";
+      }else{
+        $stmt = $connection->prepare("INSERT INTO comments(content,author_id,post_id) VALUES (:content,:authorId,:postId)");
+        $result= $stmt->execute(
+          array(
+            ':content'=>$_POST['comment'],
+            ':authorId'=> $_SESSION['user_id'],
+            ':postId'=>$blogId
+          )
+        ); 
 
         if($result){
           header('Location: blogdetail.php?id='.$blogId);
         }
+
+      }   
 
     }
 ?>
@@ -117,7 +122,7 @@
                 <div class="card-footer">
                   <form action="" method="post">
                     <!-- .img-push is used to add margin to elements next to floating images -->
-                    <div class="img-push">
+                    <div class="img-push"><p style="color:red;"><?php echo empty($cmtError)? '':$cmtError ?></p>
                       <input type="text" class="form-control form-control-sm" placeholder="Press enter to post comment"
                         name="comment">
                     </div>
