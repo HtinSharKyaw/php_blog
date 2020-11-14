@@ -58,7 +58,7 @@ if($_POST){
     //    print_r($result[0]['image']);
 
 ?>
-<?php include ('header.html');?>
+<?php include ('header.php');?>
 
     <!-- Main content -->
     <div class="content">

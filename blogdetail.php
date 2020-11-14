@@ -13,7 +13,7 @@
 
     if($_POST){
       if(empty($_POST['comment'])){
-        $cmtError = "Comments should not be null";
+        $cmtError = "Please enter some comments";
       }else{
         $stmt = $connection->prepare("INSERT INTO comments(content,author_id,post_id) VALUES (:content,:authorId,:postId)");
         $result= $stmt->execute(
