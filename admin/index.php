@@ -58,7 +58,7 @@ if($_SESSION['role']!=1){
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <th style="width: 10px">#</th>
+                      <th style="width: 10px">1</th>
                       <th>Title</th>
                       <th>Description</th>
                       <th style="width: 40px">Actions</th>

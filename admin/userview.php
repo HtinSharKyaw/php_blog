@@ -8,6 +8,15 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])){
 if($_SESSION['role']!=1){
   header('Location:login.php');
 }
+
+if(!empty($_POST['searchName'])){
+  setcookie('search', $_POST['searchName'], time() + (86400 * 30), "/");  
+}else{
+  if (empty($_GET['pageNo'])){
+    unset($_COOKIE['search']); 
+    setcookie('search', null, -1, '/'); 
+  }
+} 
 ?>
 
 
@@ -35,9 +44,9 @@ if($_SESSION['role']!=1){
                 $numberOfRecords = 5;
                 $offset = ($pageNo - 1)*$numberOfRecords;
                 
-                if($_POST){//this line solve the problem of unknown searchName error in first landing page after login
-                  $searchKey = $_POST['searchName'];
-                  $stmt = $connection->prepare("SELECT * FROM users WHERE name LIKE '%$searchKey%' ORDER BY id DESC");
+                if(!empty($_POST) || !empty($_COOKIE['search'])){//this line solve the problem of unknown searchName error in first landing page after login
+                  $searchKey = $_POST['searchName'] ? $_POST['searchName'] : $_COOKIE['search'];
+                  $stmt = $connection->prepare("SELECT * FROM users WHERE name LIKE '%$searchKey%' ORDER BY id DESC ");
                   $stmt->execute();
                   $result = $stmt->fetchAll();
                   $totalPages = ceil(count($result)/$numberOfRecords);
@@ -58,9 +67,10 @@ if($_SESSION['role']!=1){
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <th style="width: 10px">#</th>
+                      <th style="width: 10px">id</th>
                       <th>Name</th>
                       <th>Email</th>
+                      <th>Role</th>
                       <th style="width: 40px">Actions</th>
                     </tr>
                   </thead>
@@ -74,6 +84,7 @@ if($_SESSION['role']!=1){
                       <td><?php echo $i?></td> 
                       <td><?php echo $value['name']?></td>
                       <td><?php echo substr($value['email'],0,50)?></td><!--This is substring function for too much content-->
+                      <td><?php echo ($value['role']==1)? "admin":"user" ?></td>
                       <td>
                         <div class="btn-group">
                           <div class="container">

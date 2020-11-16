@@ -9,56 +9,41 @@ if($_SESSION['role']!=1){
     header('Location:login.php');
 }
 
-
 if($_POST){
-    // if(empty($_POST['title'])|| empty($_POST['content']) || empty($_POST['image'])){
-    //     echo "Hello error";
-    //     if(empty($_POST['title'])){
-    //         $titleError = "Title can not be null";
-    //     }
-    //     if(empty($_POST['content'])){
-    //         $contentError = "Content can not be null";
-    //     }
-    //     if(empty($_FILES['image'])){ 
-    //         $imageError = "Image can not be null";
-    //     }
-    // }else{
-        // $target_dir = "../dist/img/";//creating a target dir
-        // $target_file = $target_dir.basename($_FILES["image"]["name"]);
-        // $image_type = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
     
-        // if($image_type!="png" && $image_type!="jpg" && $image_type!="jpeg"){
-        //     echo "<script>alert('we don't support your image type')</script>";
-        // }else{
-            // move_uploaded_file($_FILES['image']['tmp_name'],$target_file);
-            $name = $_POST['name'];
-            $email = $_POST['email'];
-            $password = $_POST['password'];
-            $role = empty($_POST['role'])? 0:1;
-            // print_r($role);
-
-            $stmt = $connection->prepare("INSERT INTO users(name,password,email,role) VALUES (:name,:password,:email,:role)");
-            $result = $stmt->execute(
-                array(
-                    ':name' => $name,
-                    ':password' => $password,
-                    ':email' => $email,
-                    ':role' => $role
+    if(empty($_POST['name'])|| empty($_POST['email']) || empty($_POST['password']) || strlen(($_POST['password']))<=4){
+    //     echo "Hello error";
+        if(empty($_POST['name'])){
+            $nameError = "Name can not be null";
+        }
+        if(empty($_POST['email'])){
+            $emailError = "Email can not be null";
+        }
+        $passwordError = (empty($_POST['password']))? "Password should not be null ":"password length should be greater than 4"; 
+    }else{
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $role = empty($_POST['role'])? 0:1;
+            
+        $stmt = $connection->prepare("INSERT INTO users(name,password,email,role) VALUES (:name,:password,:email,:role)");
+        $result = $stmt->execute(
+            array(
+                ':name' => $name,
+                ':password' => $password,
+                ':email' => $email,
+                ':role' => $role
                 )
             );
-            if($result){
-                echo "<script>alert('successfully data added')
-                    window.location.href = 'userview.php';
-                </script>";
-            }
-        }
-   // }
-// }
+        if($result){
+            echo "<script>alert('successfully data added')
+                window.location.href = 'userview.php';
+            </script>";
+        }           
+    }
+}
 ?>
-
-
 <?php include ('header.php');?>
-
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
@@ -68,16 +53,16 @@ if($_POST){
                         <div class="card-body">
                             <form action="#" class="" method="POST" enctype="multipart/form-data">
                             <div class="form-group">
-                                <label for="">Name</label>
-                                <input type="text" class="form-control" name="name" value="" required>
+                                <label for="">Name</label><p style="color:red;"><?php echo empty($nameError)? '':'*'.$nameError?></p>
+                                <input type="text" class="form-control" name="name" value="" >
                             </div>
                             <div class="form-group">
-                                <label for="">Email</label>
-                                <input type="text" class="form-control" name="email" value="" required>
+                                <label for="">Email</label><p style="color:red;"><?php echo empty($emailError)? '':'*'.$emailError?></p>
+                                <input type="text" class="form-control" name="email" value="" >
                             </div>
                             <div class="form-group">
-                                <label for="">Password</label>
-                                <input type="password" class="form-control" name="password" value="" required>
+                                <label for="">Password</label><p style="color:red;"><?php echo empty($passwordError)? '':'*'.$passwordError?></p>
+                                <input type="password" class="form-control" name="password" value="" >
                             </div>
                             <div class="form-group">
                                 <label for="check">Admin</label>
@@ -95,4 +80,4 @@ if($_POST){
             </div>
        </div>
 <?php include ('footer.html')?>
-  
+   

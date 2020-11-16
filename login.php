@@ -10,7 +10,7 @@ if($_POST){
     $stmt->bindValue(':email',$email);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    print_r($user)  ;
+    //print_r($user)  ;
 
     if($user){
       if($user['password']==$password){

@@ -11,7 +11,7 @@ if($_SESSION['role']!=1){
 
 
 if($_POST){
-    if(empty($_POST['title'])|| empty($_POST['content']) || empty($_POST['image'])){
+    if(empty($_POST['title'])|| empty($_POST['content']) || empty($_FILES['image'])){
         echo "Hello error";
         if(empty($_POST['title'])){
             $titleError = "Title can not be null";
@@ -19,7 +19,7 @@ if($_POST){
         if(empty($_POST['content'])){
             $contentError = "Content can not be null";
         }
-        if(empty($_FILES['image'])){ 
+        if(empty($_FILES['image']['name'])){ 
             $imageError = "Image can not be null";
         }
     }else{
