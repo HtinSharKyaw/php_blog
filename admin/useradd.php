@@ -23,7 +23,7 @@ if($_POST){
     }else{
         $name = $_POST['name'];
         $email = $_POST['email'];
-        $password = $_POST['password'];
+        $password = password_hash($_POST['password'],PASSWORD_DEFAULT) ;
         $role = empty($_POST['role'])? 0:1;
             
         $stmt = $connection->prepare("INSERT INTO users(name,password,email,role) VALUES (:name,:password,:email,:role)");

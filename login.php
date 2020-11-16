@@ -4,7 +4,7 @@ require 'config/config.php';
 
 if($_POST){
     $email = $_POST['email'];
-    $password = $_POST['password'];
+    $password =  $_POST['password'];
 
     $stmt = $connection->prepare("SELECT * FROM users WHERE email =:email");
     $stmt->bindValue(':email',$email);
@@ -13,7 +13,7 @@ if($_POST){
     //print_r($user)  ;
 
     if($user){
-      if($user['password']==$password){
+      if(password_verify($password,$user['password'])){
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_name'] = $user['name'];
         $_SESSION['logged_in'] = time();

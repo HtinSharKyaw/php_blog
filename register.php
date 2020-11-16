@@ -15,7 +15,7 @@ if($_POST){
       }else{
         $name = $_POST["name"];
         $email = $_POST["email"];
-        $password = $_POST["password"];
+        $password = password_hash($_POST["password"],PASSWORD_DEFAULT);
 
         $stmt = $connection->prepare("SELECT * FROM users WHERE email=:email");
         $stmt->bindValue(':email',$email);
@@ -81,7 +81,7 @@ if($_POST){
         <form action="register.php" method="post">
           <p style="color: red; font-size:  15px;"><?php echo empty($nameError)? '':$nameError?></p>
           <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Name" name="name" value="<?php echo empty($nameError)? $_POST['name']:''; ?>" required>
+            <input type="text" class="form-control" placeholder="Name" name="name" value="<?php if($_POST) echo empty($nameError)? $_POST['name']:''; ?>" required>
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-envelope"></span>
@@ -91,7 +91,7 @@ if($_POST){
           
           <p style="color: red; font-size:  15px;"><?php echo empty($emailError)? '':$emailError?></p>
           <div class="input-group mb-3">
-            <input type="email" class="form-control" placeholder="Email" name="email" value="<?php echo empty($emailError)? $_POST['email']:'';?>" required>
+            <input type="email" class="form-control" placeholder="Email" name="email" value="<?php if($_POST) echo empty($emailError)? $_POST['email']:'';?>" required>
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-envelope"></span>
@@ -101,7 +101,7 @@ if($_POST){
 
           <p style="color: red; font-size: 15px;"><?php echo empty($passwordError)? '':$passwordError?></p>
           <div class="input-group mb-3">
-            <input type="password" class="form-control" placeholder="Password" name="password" value="<?php echo empty($passwordError)? $_POST['password']:'';?>" required>
+            <input type="password" class="form-control" placeholder="Password" name="password" value="<?php if($_POST) echo empty($passwordError)? $_POST['password']:'';?>" required>
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-lock"></span>

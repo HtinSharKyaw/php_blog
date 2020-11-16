@@ -23,8 +23,8 @@ if($_POST){
         $id = $_POST["hiddenId"];
         $name = $_POST['name'];
         $email = $_POST['email'];
-        $password = $_POST['password'];
-        $role = $_POST['role'];
+        $password =password_hash( $_POST['password'], PASSWORD_DEFAULT);
+        $role = empty($_POST['role'])? '0':'1' ;
         $stmt = $connection-> prepare("UPDATE users SET name=:name,email=:email,password=:password,role=:role WHERE id =:id");
         $result = $stmt->execute(
             array(
@@ -40,8 +40,6 @@ if($_POST){
         }
     }
 }  
-
-
     $stmt = $connection-> prepare("SELECT * FROM users WHERE id = ".$_GET['id']);
     $stmt->execute();
     $result = $stmt->fetchAll();
@@ -71,11 +69,11 @@ if($_POST){
                             <div class="form-group"><p style="color:red;"><?php echo empty($passwordError)? '':'*'.$passwordError?></p>
                                 <label for="">Password</label><p style="color:red"> 
                                 <span style="font-size: 10px;">*This user already had an password</span>  
-                                <input type="text" name="password" class="form-control" value="<?php echo $result[0]['password']?>">
+                                <input type="text" name="password" class="form-control" value="">
                             </div>
                             <div class="form-group">
                                 <label for="check">Admin</label>
-                                <input type="checkbox" name="role" value="1" id="check">
+                                <input type="checkbox" name="role" value="1" id="check" <?php echo $result[0]['role']==1? 'checked':''?>>
                             </div>
                             <div class="form-group">
                                 <input type="submit" class="btn btn-success" value="Submit ">
