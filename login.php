@@ -1,8 +1,9 @@
 <?php 
 session_start();
 require 'config/config.php';
-
+require 'config/common.php';
 if($_POST){
+  if (!hash_equals($_SESSION['_token'], $_POST['token'])) die();
     $email = $_POST['email'];
     $password =  $_POST['password'];
 
@@ -12,7 +13,8 @@ if($_POST){
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     //print_r($user)  ;
 
-    if($user){
+    if($user){      
+      unset($_SESSION['_token']);//That is for token deleting token and refreshing the token
       if(password_verify($password,$user['password'])){
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_name'] = $user['name'];
@@ -61,6 +63,7 @@ if($_POST){
       <p class="login-box-msg">Sign in to start your session</p>
 
       <form action="login.php" method="post">
+      <input name="token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
         <div class="input-group mb-3">
           <input type="email" class="form-control" placeholder="Email" name="email" required>
           <div class="input-group-append">

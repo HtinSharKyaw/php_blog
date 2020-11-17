@@ -1,50 +1,49 @@
 <?php 
 session_start();
 require 'config/config.php';
-
+require 'config/common.php';
 if($_POST){
+  if (!hash_equals($_SESSION['_token'], $_POST['token'])) die();
   if(empty($_POST['name'])|| empty($_POST['email']) || empty($_POST['password']) || strlen(($_POST['password']))<=4){
     //     echo "Hello error";
     if(empty($_POST['name'])){
       $nameError = "Name can not be null";
     }
-        if(empty($_POST['email'])){
-            $emailError = "Email can not be null";
-        }
-        $passwordError = (empty($_POST['password']))? "Password should not be null ":"password length should be greater than 4"; 
-      }else{
-        $name = $_POST["name"];
-        $email = $_POST["email"];
-        $password = password_hash($_POST["password"],PASSWORD_DEFAULT);
-
-        $stmt = $connection->prepare("SELECT * FROM users WHERE email=:email");
-        $stmt->bindValue(':email',$email);
-        $stmt->execute();
-
-        $hasAccount = $stmt->fetch(PDO::FETCH_ASSOC);
-
-      if($hasAccount){
-          // print_r($hasAccount);
-          echo "<script>alert('This email is already used,Please try another one')</script>";
-      }else{
-        $insertStmt= $connection->prepare("INSERT INTO users(name,password,email,role) VALUES (:name,:password,:email,:role)");
-        $insertResult =  $insertStmt->execute(
-          array(
-            ':name'=> $name,
-            ':email'=> $email,
-            ':password'=>$password,
-            ':role'=>0
-          )
-        );
-        if($insertResult){
-            echo "<script>alert('Successfully Registered');
-            window.location.href = 'login.php';
-            </script>";   
-        }
-       
-      }  
+    if(empty($_POST['email'])){
+        $emailError = "Email can not be null";
     }
+    $passwordError = (empty($_POST['password']))? "Password should not be null ":"password length should be greater than 4"; 
+  }else{
+    unset($_SESSION['_token']);//That is for token deleting token and refreshing the token
+    $name = $_POST["name"];
+    $email = $_POST["email"];
+    $password = password_hash($_POST["password"],PASSWORD_DEFAULT);
+
+    $stmt = $connection->prepare("SELECT * FROM users WHERE email=:email");
+    $stmt->bindValue(':email',$email);
+    $stmt->execute();
+    $hasAccount = $stmt->fetch(PDO::FETCH_ASSOC);
+    if($hasAccount){
+          // print_r($hasAccount);
+      echo "<script>alert('This email is already used,Please try another one')</script>";
+    }else{
+      $insertStmt= $connection->prepare("INSERT INTO users(name,password,email,role) VALUES (:name,:password,:email,:role)");
+      $insertResult =  $insertStmt->execute(
+      array(
+        ':name'=> $name,
+        ':email'=> $email,
+        ':password'=>$password,
+        ':role'=>0
+        )
+      );
+      if($insertResult){
+        echo "<script>alert('Successfully Registered');
+         window.location.href = 'login.php';
+          </script>";   
+      } 
+    }  
   }
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -79,6 +78,7 @@ if($_POST){
         <p class="login-box-msg">Register Account</p>
 
         <form action="register.php" method="post">
+        <input name="token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
           <p style="color: red; font-size:  15px;"><?php echo empty($nameError)? '':$nameError?></p>
           <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="Name" name="name" value="<?php if($_POST) echo empty($nameError)? $_POST['name']:''; ?>" required>

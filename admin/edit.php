@@ -1,6 +1,7 @@
 <?php 
 session_start();
 require '../config/config.php';
+require '../config/common.php';
 if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])){
     header('Location:login.php');
 }
@@ -10,6 +11,7 @@ if($_SESSION['role']!=1){
 }
 
 if($_POST){
+    if (!hash_equals($_SESSION['_token'], $_POST['token'])) die();
     if(empty($_POST['title'])|| empty($_POST['content'])){
         echo "Hello error";
         if(empty($_POST['title'])){
@@ -19,6 +21,8 @@ if($_POST){
             $contentError = "Content can not be null";
         }
     }else{
+        unset($_SESSION['_token']);//That is for token deleting token and refreshing the token
+
         $id = $_POST["hiddenId"];
         $title = $_POST['title'];
         $content = $_POST['content'];
@@ -68,6 +72,7 @@ if($_POST){
                     <div class="card">
                         <div class="card-body">
                             <form action="" class="" method="POST" enctype="multipart/form-data">
+                            <input name="token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
                             <input type="hidden" name="hiddenId" value="<?php echo $result[0]['id'] ?>">
                             <div class="form-group">
                                 <label for="">Title</label><p style="color:red"><?php echo empty($titleError)? '':$titleError; ?></p>

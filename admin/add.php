@@ -1,6 +1,7 @@
 <?php 
 session_start();
 require '../config/config.php';
+require '../config/common.php';
 if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])){
     header('Location:login.php');
 }
@@ -11,6 +12,8 @@ if($_SESSION['role']!=1){
 
 
 if($_POST){
+    if (!hash_equals($_SESSION['_token'], $_POST['token'])) die();
+
     if(empty($_POST['title'])|| empty($_POST['content']) || empty($_FILES['image'])){
         echo "Hello error";
         if(empty($_POST['title'])){
@@ -44,12 +47,13 @@ if($_POST){
                     ':authorId' => $authorId
                 )
             );
+            unset($_SESSION['_token']);
             if($result){
                 echo "<script>alert('successfully data added')
                     window.location.href = 'index.php';
                 </script>";
-            }
-        }
+            }   
+        }   
     }
 }
 ?>
@@ -65,6 +69,7 @@ if($_POST){
                     <div class="card">
                         <div class="card-body">
                             <form action="add.php" class="" method="POST" enctype="multipart/form-data">
+                            <input name="token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
                             <div class="form-group">
                                 <label for="">Title</label><p style="color:red"><?php echo empty($titleError)? '':$titleError; ?></p>
                                 <input type="text" class="form-control" name="title" value="" required>

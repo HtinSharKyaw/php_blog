@@ -81,7 +81,7 @@ require 'config/config.php';
                 </div>
                 <br>
                 <br>
-                <div style="display: flex; flex-direction:row; justify-content: flex-end; margin-right: 10px;" >
+                    <div style="display: flex; flex-direction:row; justify-content: flex-end; margin-right: 10px;" >
                         <nav aria-label="Page navigation example" >
                             <ul class="pagination">
                             <li class="page-item"><a class="page-link" href="?pageNo=1" >First</a> </li>
