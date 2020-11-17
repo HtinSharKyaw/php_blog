@@ -1,6 +1,7 @@
 <?php 
 session_start();
 require '../config/config.php';
+require '../config/common.php';
 if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])){
   header('Location:login.php');
 }
@@ -72,8 +73,8 @@ if($_SESSION['role']!=1){
                   ?>
                   <tr>
                       <td><?php echo $i?></td> 
-                      <td><?php echo $value['title']?></td>
-                      <td><?php echo substr($value['content'],0,50)?></td><!--This is substring function for too much content-->
+                      <td><?php echo escape($value['title'])?></td>
+                      <td><?php echo substr(escape($value['content']),0,50)?></td><!--This is substring function for too much content-->
                       <td>
                         <div class="btn-group">
                           <div class="container">

@@ -64,11 +64,11 @@ if($_POST){
                             <input type="hidden" name="hiddenId" value="<?php echo $result[0]['id'] ?>">
                             <div class="form-group">
                                 <label for="">Name</label><p style="color:red;"><?php echo empty($nameError)? '':'*'.$nameError?></p>
-                                <input type="text" class="form-control" name="name" value="<?php echo $result[0]['name'] ?>" required>
+                                <input type="text" class="form-control" name="name" value="<?php echo escape($result[0]['name'] )?>" required>
                             </div>
                             <div class="form-group"><p style="color:red;"><?php echo empty($emailError)? '':'*'.$emailError?></p>
                                 <label for="">Email</label><p style="color:red">  
-                                <input type="text" name="email" class="form-control" value="<?php echo $result[0]['email']?>">
+                                <input type="text" name="email" class="form-control" value="<?php echo escape($result[0]['email'])?>">
                             </div>
                             <div class="form-group"><p style="color:red;"><?php echo empty($passwordError)? '':'*'.$passwordError?></p>
                                 <label for="">Password</label><p style="color:red"> 

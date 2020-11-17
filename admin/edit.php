@@ -76,11 +76,11 @@ if($_POST){
                             <input type="hidden" name="hiddenId" value="<?php echo $result[0]['id'] ?>">
                             <div class="form-group">
                                 <label for="">Title</label><p style="color:red"><?php echo empty($titleError)? '':$titleError; ?></p>
-                                <input type="text" class="form-control" name="title" value="<?php echo $result[0]['title'] ?>" required>
+                                <input type="text" class="form-control" name="title" value="<?php echo escape($result[0]['title'])  ?>" required>
                             </div>
                             <div class="form-group">
                                 <label for="">Content</label><p style="color:red"><?php echo empty($contentError)? '':$contentError; ?></p>
-                                <textarea name="content" class="form-control" rows="5" columns="80"><?php echo $result[0]['content']?></textarea>
+                                <textarea name="content" class="form-control" rows="5" columns="80"><?php echo escape($result[0]['content'])?></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="">Image</label><p style="color:red"><?php echo empty($imageError)? '':$imageError; ?></p>

@@ -1,6 +1,8 @@
 <?php 
+  session_start();
   require 'config/config.php';
-    session_start();
+  require 'config/common.php';
+
     if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])){
         header('Location:login.php');
     }
@@ -12,9 +14,11 @@
    
 
     if($_POST){
+      if (!hash_equals($_SESSION['_token'], $_POST['token'])) die();
       if(empty($_POST['comment'])){
         $cmtError = "Please enter some comments";
       }else{
+        unset($_SESSION['_token']);//That is for token deleting token and refreshing the token
         $stmt = $connection->prepare("INSERT INTO comments(content,author_id,post_id) VALUES (:content,:authorId,:postId)");
         $result= $stmt->execute(
           array(
@@ -64,7 +68,7 @@
               <!-- Box Comment -->
               <div class="card card-widget">
                 <div class="card-header">
-                  <div class="card-header" style="text-align: center; float:none;"><?php echo $result[0]['title'] ?>
+                  <div class="card-header" style="text-align: center; float:none;"><?php echo escape($result[0]['title']) ?>
                   </div>
                 </div>
                 <!-- /.card-header -->
@@ -74,7 +78,7 @@
                       style="width:450px;height:300px;" alt="Photo">
                   </div>
                   <br>
-                  <p style="text-align: center;"><?php echo $result[0]['content']?></p>
+                  <p style="text-align: center;"><?php echo escape($result[0]['content'])?></p>
                   <div class="float-right d-none d-sm-inline">
                   <a href="index.php" type="button" class="btn btn-primary">Go Back</a>
                   </div>
@@ -109,7 +113,7 @@
                         <?php echo $result['name'] ?>
                         <span class="text-muted float-right"><?php echo $value['created_at'] ?></span>
                       </span><!-- /.username -->
-                      <?php echo $value['content'] ?>
+                      <?php echo escape($value['content']) ?>
                     </div>
                     <!-- /.comment-text -->
                   </div>
@@ -121,6 +125,7 @@
                 <!-- /.card-footer -->
                 <div class="card-footer">
                   <form action="" method="post">
+                  <input name="token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
                     <!-- .img-push is used to add margin to elements next to floating images -->
                     <div class="img-push"><p style="color:red;"><?php echo empty($cmtError)? '':$cmtError ?></p>
                       <input type="text" class="form-control form-control-sm" placeholder="Press enter to post comment"

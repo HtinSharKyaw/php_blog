@@ -1,10 +1,10 @@
 <?php 
+session_start();
 require 'config/config.php';
-    session_start();
+require 'config/common.php';
     if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])){
         header('Location:login.php');
     }
-
 
 ?>
 
@@ -63,14 +63,14 @@ require 'config/config.php';
                          foreach($finalResult as $value){
                         ?>
                             <div class="card">
-                                <div class="card-header" style="text-align: center; float:none;"><?php echo $value['title']?></div>
+                                <div class="card-header" style="text-align: center; float:none;"><?php echo  escape($value['title'])?></div>
                                 <div class="card-body">
                                     <a href="blogdetail.php?id=<?php echo $value['id']?>">
                                     <img class="img-fluid pad card-img-top" src="dist/img/<?php echo $value['image'] ?>" alt="photo">
                                     </a><div><br></div>
-                                    <h5 class="card-title"><?php echo $value['title']?></h5>
+                                    <h5 class="card-title"><?php echo escape($value['title'])?></h5>
                                     <br>
-                                    <p class="card-text"><?php echo $value['content']?></p>
+                                    <p class="card-text"><?php echo escape($value['content'])?></p>
                                    
                                 </div>
                             </div>
